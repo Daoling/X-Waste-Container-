@@ -3,6 +3,9 @@
 from PyQt5 import QtCore,QtGui,QtWidgets
 import sys
 import qtawesome
+import serial
+
+ser=serial.Serial("/dev/ttyUSB1",9600,timeout=0.5)
 
 global LOGIN_SIGN
 LOGIN_SIGN = False
@@ -452,11 +455,13 @@ class Door(QtWidgets.QDialog):
 
     def OpenDoor(self):
         #TODO 打开仓门
+        ser.write('open door'.encode())
         print ("打开仓门")
         pass
 
     def CloseDoor(self):
         #TODO 关闭仓门
+        ser.write('close door'.encode())
         print ("关闭仓门")
         pass
 
