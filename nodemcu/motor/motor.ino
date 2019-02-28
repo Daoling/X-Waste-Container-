@@ -1,6 +1,3 @@
-//本次实验电机驱动采用共阴极接线方式
-//将步进电机的参数写到一个子函数中，并加入限位开关，触动限位开关可实现步进电机停转
-//20180519 by xcx
 const int DIRPin = D1; //define Direction pin
 const int PULPin = D0; //define Pulse pin
  
@@ -13,12 +10,12 @@ void setup()
  
 void loop()
 {
-    digitalWrite(PULPin, HIGH);
-    delayMicroseconds(200);
-    digitalWrite(PULPin, LOW);
-    delayMicroseconds(200);
-  //StepperMotor(false, true, 3200);//此时3200由于在这个循环中，只要不修改成0，则修改他的值没什么影响，转速不会改变
-
+  static int a = 1;
+  if(a){
+    a = 0;
+    StepperMotor(false, true, 3200);
+    }
+  //StepperMotor(false, true, 100);//此时3200由于在这个循环中，只要不修改成0，则修改他的值没什么影响，转速不会改变
 }
  
 //步进电机子函数
