@@ -22,7 +22,7 @@ LOGIN_SIGN = False
 USER_ID = ""
 TOKEN = ""
 USER_NAME = ""
-DeviceId = 001
+DeviceId = "001"
 HOST = "www.yikeni.com"
 PORT = 1883
 ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
