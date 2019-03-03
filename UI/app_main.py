@@ -1,14 +1,31 @@
 # coding:utf-8
-
 from PyQt5 import QtCore,QtGui,QtWidgets
 import sys
 import qtawesome
 import serial
+import json
+import requests
+import createImage
+import datetime
+import paho.mqtt.publish as publish
+import time
+import paho.mqtt.client as mqtt
+import requests.packages.urllib3.util.ssl_
 
-ser=serial.Serial("/dev/ttyUSB1",9600,timeout=0.5)
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL'
 
 global LOGIN_SIGN
+global USER_ID
+global TOKEN
+global USER_NAME
 LOGIN_SIGN = False
+USER_ID = ""
+TOKEN = ""
+USER_NAME = ""
+DeviceId = 001
+HOST = "www.yikeni.com"
+PORT = 1883
+ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
 
 class MainUi(QtWidgets.QMainWindow):
     def __init__(self):
@@ -113,6 +130,8 @@ class MainUi(QtWidgets.QMainWindow):
 
     def shwoDeliverDialog(self):
         self.Deliverdialog = Deliver()
+        self.Deliverdialog.token = TOKEN
+        self.Deliverdialog.userId = USER_ID
         self.Deliverdialog.setWindowModality(QtCore.Qt.ApplicationModal)  # 该模式下，只有该dialog关闭，才可以关闭父界面
         self.Deliverdialog.showMaximized()
 
@@ -130,8 +149,59 @@ class Login(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
         self.use_palette()
+        self.token = ""
+        self.qrid = ""
+        self.userId = ""
+        self.userName = ""
+        self.set_input()
         self.init_ui()
-        self.result = False
+        self.client = ""
+        self.init_mqtt()
+
+    def on_connect(self, client, userdata, flags, rc):
+        print("Connected with result code " + str(rc))
+        client.subscribe("xtrash")
+
+    def on_message(self, client, userdata, msg):
+        global USER_ID
+        global USER_NAME
+        global TOKEN
+        print(msg.topic + " " + msg.payload.decode("utf-8"))
+        mqtt_message = msg.payload
+        if msg.topic == 'data_msg':
+            jsonData = json.loads(mqtt_message)
+            TOKEN = jsonData["token"]
+            USER_NAME = jsonData["usrname"]
+            USER_ID =  jsonData["usrid"]
+            self.btnOK()
+
+
+    def init_mqtt(self):
+        client_id = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+        client = mqtt.Client(client_id)  # ClientId不能重复，所以使用当前时间
+
+        client.username_pw_set("secomiot", "#secom&2019@")  # 必须设置，否则会返回「Connected with result code 4」
+
+        client.on_connect = self.on_connect
+        client.on_message = self.on_message
+        client.connect(HOST, PORT, 60)
+
+        client.loop_start()
+
+    def set_input(self):
+        global USER_ID
+        global USER_NAME
+        global TOKEN
+        TOKEN = ""
+        USER_NAME = ""
+        USER_ID = ""
+        url = "https://www.yikeni.com/xtrash/get_qrContent"
+        response = requests.get(url, headers={'deviceId': DeviceId})
+        info_dict = json.loads(response.text)
+        self.token = info_dict["token"]
+        self.qrid = info_dict["qrid"]
+        createImage.CreateImage.getQrPath(self.qrid)
+
 
     def init_ui(self):
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
@@ -226,7 +296,8 @@ class Login(QtWidgets.QDialog):
 
         print (LOGIN_SIGN)
         self.right_recommend_label.setText("")
-        self.timer = QtCore.QTimer(self)
+        self.timer.stop()
+        self.client.loop_stop()
         self.close()
 
     def btnOK(self):
@@ -234,7 +305,8 @@ class Login(QtWidgets.QDialog):
         LOGIN_SIGN = True
         print (LOGIN_SIGN)
         self.right_recommend_label.setText("")
-        self.timer = QtCore.QTimer(self)
+        self.timer.stop()
+        self.client.loop_stop()
         self.close()
 
 
@@ -244,6 +316,8 @@ class Deliver(QtWidgets.QMainWindow):
         super().__init__()
         self.init_ui()
         self.use_palette()
+        self.userId = ""
+        self.token = ""
 
     def init_ui(self):
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
@@ -368,7 +442,25 @@ class Deliver(QtWidgets.QMainWindow):
         self.close()
 
     def openDoor(self):
+        DoorNO = ""
+        if self.sender() == self.recommend_button_1:
+            DoorNO = "01"
+        if self.sender() == self.recommend_button_2:
+            DoorNO = "02"
+        if self.sender() == self.recommend_button_3:
+            DoorNO = "03"
+        if self.sender() == self.recommend_button_4:
+            DoorNO = "04"
+        if self.sender() == self.recommend_button_5:
+            DoorNO = "05"
+        if self.sender() == self.recommend_button_6:
+            DoorNO = "06"
+        if self.sender() == self.recommend_button_7:
+            DoorNO = "07"
         self.Opendailog = Door()
+        self.Opendailog.token = self.token
+        self.Opendailog.userId = self.userId
+        self.Opendailog.DoorNO = DoorNO
         self.Opendailog.setWindowModality(QtCore.Qt.ApplicationModal)  # 该模式下，只有该dialog关闭，才可以关闭父界面
         self.Opendailog.show()
         self.Opendailog.exec_()
@@ -381,6 +473,9 @@ class Door(QtWidgets.QDialog):
         self.init_ui()
         self.result = False
         self.OpenDoor()
+        self.userId = ""
+        self.token = ""
+        self.DoorNO = ""
 
     def init_ui(self):
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
@@ -413,7 +508,6 @@ class Door(QtWidgets.QDialog):
         self.recommend_button.setIconSize(QtCore.QSize(200, 200))  # 设置图标大小
         self.recommend_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)  # 设置按钮形式为上图下文
         self.recommend_button.clicked.connect(self.btnOK)
-
 
         self.right_recommend_layout.addWidget(self.recommend_button,0,1)
 
@@ -453,17 +547,17 @@ class Door(QtWidgets.QDialog):
         window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap('backgroud.jpg')))
         self.setPalette(window_pale)
 
-    def OpenDoor(self):
-        #TODO 打开仓门
-        ser.write('open door'.encode())
-        print ("打开仓门")
-        pass
-
-    def CloseDoor(self):
-        #TODO 关闭仓门
-        ser.write('close door'.encode())
-        print ("关闭仓门")
-        pass
+    def OpenDoor(self, Number):
+        input_dict = "{‘Action’:’OpenDoor’,’Number’:Number}"
+        input_str = json.dumps(input_dict)
+        ser.write(input_str)
+        length = ser.inWaiting()
+        res = ser.read(length)
+        out_put = json.loads(res)
+        if out_put["info"] == "OK":
+            self.record_action("1")
+        else:
+            self.record_action("1") #记录开门失败，告警
 
 
     def Cancel(self):
@@ -479,24 +573,90 @@ class Door(QtWidgets.QDialog):
 
 
     def btnCancel(self):
+        """超时关门"""
         global LOGIN_SIGN
         LOGIN_SIGN = False
-
-        print (LOGIN_SIGN)
         self.right_recommend_label.setText("60秒后关闭仓门")
-        self.timer = QtCore.QTimer(self)
-        self.CloseDoor()
+        self.timer.stop()
+        res  = self.do_action("CloseDoor")
+        if res:
+            photo = self.do_action("Photograph")
+            Weigh = self.do_action("Weigh")
+            Height = self.do_action("Height")
         self.close()
 
     def btnOK(self):
+        """手动关门"""
         global LOGIN_SIGN
         LOGIN_SIGN = True
-        print (LOGIN_SIGN)
+
         self.right_recommend_label.setText("60秒后关闭仓门")
-        self.timer = QtCore.QTimer(self)
-        self.CloseDoor()
+        self.timer.stop()
+        res = self.do_action("CloseDoor")
+        if res:
+            photo = self.do_action("Photograph")
+            self.upload_picture(photo)
+            Weigh = self.do_action("Weigh")
+            self.upload_weigh(Weigh)
+            Height = self.do_action("Height")
+            self.upload_Height(Height)
         self.close()
 
+    def upload_picture(self, picture):
+        url = "https://www.yikeni.com/xtrash/upload_picture"
+        header_dict = {"deviceId":DeviceId,
+                     "token":self.token,
+                     "type":"1",
+                    'Api-Key':'InhpeWFuZzA4MDdJBtx4AWlPpI_Oxx1Ki8',
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36'
+                    }
+
+        time_string = datetime.datetime.now().strftime("%Y-%m-%d_%H:%S:%M")
+
+        picture_name = DeviceId + "_" + time_string + ".png"
+        multiple_files = [
+            ('images', (picture_name, picture, 'image/png'))
+        ]
+        response = requests.post(url, files=multiple_files, headers=header_dict)
+        print(response.text)
+
+    def upload_weigh(self, Weigh):
+        url = "https://www.yikeni.com/xtrash/upload_weight"
+        header_dict = {"deviceId": DeviceId,
+                       "weight":Weigh,
+                       "token": self.token,
+                       "userId": self.userId
+                       }
+        response = requests.get(url, header_dict)
+        print(response.text)
+
+    def upload_Height(self, Height):
+        url = "https://www.yikeni.com/xtrash/upload_height"
+        header_dict = {"deviceId": DeviceId,
+                       "height": Height,
+                       "token": self.token,
+                       "userId": self.userId
+                       }
+        response = requests.get(url, header_dict)
+        print(response.text)
+
+
+    def record_action(self,Type):
+        """ Type 操作类型  1：开门  2：关门"""
+        url = "https://www.yikeni.com/xtrash/add_operationecord/"
+        body_json = {"type":Type, "userId":self.userId, "token": self.token}
+        response = requests.get(url, body_json)
+
+        print(response.text)
+
+    def do_action(self, action):
+        input_dict = {"Action":action,"Number":self.DoorNO}
+        input_str = json.dumps(input_dict)
+        ser.write(input_str)
+        length = ser.inWaiting()
+        res = ser.read(length)
+        out_put = json.loads(res)
+        return out_put["info"]
 
 
 
