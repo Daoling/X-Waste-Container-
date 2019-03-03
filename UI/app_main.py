@@ -369,7 +369,6 @@ class Deliver(QtWidgets.QMainWindow):
         self.right_recommend_layout.addWidget(self.recommend_button_1,0,0)
         self.right_recommend_layout.addWidget(self.recommend_button_2,0,1)
         self.right_recommend_layout.addWidget(self.recommend_button_3, 0, 2)
-        self.right_recommend_layout.addWidget(self.recommend_button_4, 0, 3)
 
         self.recommend_button_5 = QtWidgets.QToolButton()
         #self.recommend_button_5.setText("有害类") # 设置按钮文本
@@ -400,10 +399,12 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_8.clicked.connect(self.exit)
 
 
-        self.right_recommend_layout.addWidget(self.recommend_button_5, 1, 0)
-        self.right_recommend_layout.addWidget(self.recommend_button_6, 1, 1)
-        self.right_recommend_layout.addWidget(self.recommend_button_7, 1, 2)
-        self.right_recommend_layout.addWidget(self.recommend_button_8, 1, 3)
+        self.right_recommend_layout.addWidget(self.recommend_button_4, 1, 0)
+        self.right_recommend_layout.addWidget(self.recommend_button_5, 1, 1)
+        self.right_recommend_layout.addWidget(self.recommend_button_6, 1, 2)
+
+        self.right_recommend_layout.addWidget(self.recommend_button_7, 2, 0)
+        self.right_recommend_layout.addWidget(self.recommend_button_8, 2, 2)
 
         self.right_layout.addWidget(self.right_recommend_widget, 1, 0, 2, 9)
 
