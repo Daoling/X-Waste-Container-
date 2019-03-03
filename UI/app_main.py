@@ -22,7 +22,7 @@ LOGIN_SIGN = False
 USER_ID = ""
 TOKEN = ""
 USER_NAME = ""
-DeviceId = 001
+DeviceId = "001"
 HOST = "www.yikeni.com"
 PORT = 1883
 ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
@@ -178,15 +178,15 @@ class Login(QtWidgets.QDialog):
 
     def init_mqtt(self):
         client_id = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-        client = mqtt.Client(client_id)  # ClientId不能重复，所以使用当前时间
+        self.client = mqtt.Client(client_id)  # ClientId不能重复，所以使用当前时间
 
-        client.username_pw_set("secomiot", "#secom&2019@")  # 必须设置，否则会返回「Connected with result code 4」
+        self.client.username_pw_set("secomiot", "#secom&2019@")  # 必须设置，否则会返回「Connected with result code 4」
 
-        client.on_connect = self.on_connect
-        client.on_message = self.on_message
-        client.connect(HOST, PORT, 60)
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.client.connect(HOST, PORT, 60)
 
-        client.loop_start()
+        self.client.loop_start()
 
     def set_input(self):
         global USER_ID
@@ -195,12 +195,13 @@ class Login(QtWidgets.QDialog):
         TOKEN = ""
         USER_NAME = ""
         USER_ID = ""
-        url = "https://www.yikeni.com/xtrash/get_qrContent"
-        response = requests.get(url, headers={'deviceId': DeviceId})
+        url = "https://www.yikeni.com/xtrash/get_qrContent/?deviceId=" + DeviceId
+        response = requests.get(url)
         info_dict = json.loads(response.text)
         self.token = info_dict["token"]
         self.qrid = info_dict["qrid"]
-        createImage.CreateImage.getQrPath(self.qrid)
+        Qr = createImage.CreateImage()
+        Qr.getQrPath(self.qrid)
 
 
     def init_ui(self):
@@ -369,7 +370,6 @@ class Deliver(QtWidgets.QMainWindow):
         self.right_recommend_layout.addWidget(self.recommend_button_1,0,0)
         self.right_recommend_layout.addWidget(self.recommend_button_2,0,1)
         self.right_recommend_layout.addWidget(self.recommend_button_3, 0, 2)
-        self.right_recommend_layout.addWidget(self.recommend_button_4, 0, 3)
 
         self.recommend_button_5 = QtWidgets.QToolButton()
         #self.recommend_button_5.setText("有害类") # 设置按钮文本
@@ -400,10 +400,12 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_8.clicked.connect(self.exit)
 
 
-        self.right_recommend_layout.addWidget(self.recommend_button_5, 1, 0)
-        self.right_recommend_layout.addWidget(self.recommend_button_6, 1, 1)
-        self.right_recommend_layout.addWidget(self.recommend_button_7, 1, 2)
-        self.right_recommend_layout.addWidget(self.recommend_button_8, 1, 3)
+        self.right_recommend_layout.addWidget(self.recommend_button_4, 1, 0)
+        self.right_recommend_layout.addWidget(self.recommend_button_5, 1, 1)
+        self.right_recommend_layout.addWidget(self.recommend_button_6, 1, 2)
+
+        self.right_recommend_layout.addWidget(self.recommend_button_7, 2, 0)
+        self.right_recommend_layout.addWidget(self.recommend_button_8, 2, 2)
 
         self.right_layout.addWidget(self.right_recommend_widget, 1, 0, 2, 9)
 
@@ -472,7 +474,7 @@ class Door(QtWidgets.QDialog):
         self.use_palette()
         self.init_ui()
         self.result = False
-        self.OpenDoor()
+        self.do_action("OpenDoor")
         self.userId = ""
         self.token = ""
         self.DoorNO = ""
@@ -547,19 +549,6 @@ class Door(QtWidgets.QDialog):
         window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap('backgroud.jpg')))
         self.setPalette(window_pale)
 
-    def OpenDoor(self, Number):
-        input_dict = "{‘Action’:’OpenDoor’,’Number’:Number}"
-        input_str = json.dumps(input_dict)
-        ser.write(input_str)
-        length = ser.inWaiting()
-        res = ser.read(length)
-        out_put = json.loads(res)
-        if out_put["info"] == "OK":
-            self.record_action("1")
-        else:
-            self.record_action("1") #记录开门失败，告警
-
-
     def Cancel(self):
         str_second = self.right_recommend_label.text().strip("秒")
         try:
@@ -603,10 +592,8 @@ class Door(QtWidgets.QDialog):
         self.close()
 
     def upload_picture(self, picture):
-        url = "https://www.yikeni.com/xtrash/upload_picture"
-        header_dict = {"deviceId":DeviceId,
-                     "token":self.token,
-                     "type":"1",
+        url = "https://www.yikeni.com/xtrash/upload_picture/?deviceId=%s&token=%s&type=1"%(DeviceId,self.token)
+        header_dict = {
                     'Api-Key':'InhpeWFuZzA4MDdJBtx4AWlPpI_Oxx1Ki8',
                     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36'
                     }
@@ -621,31 +608,20 @@ class Door(QtWidgets.QDialog):
         print(response.text)
 
     def upload_weigh(self, Weigh):
-        url = "https://www.yikeni.com/xtrash/upload_weight"
-        header_dict = {"deviceId": DeviceId,
-                       "weight":Weigh,
-                       "token": self.token,
-                       "userId": self.userId
-                       }
-        response = requests.get(url, header_dict)
+        url = "https://www.yikeni.com/xtrash/upload_weight/?deviceId=%s&weight=%s&token=%s&userId=%s"%(DeviceId,Weigh,self.token,self.userId)
+        response = requests.get(url)
         print(response.text)
 
     def upload_Height(self, Height):
-        url = "https://www.yikeni.com/xtrash/upload_height"
-        header_dict = {"deviceId": DeviceId,
-                       "height": Height,
-                       "token": self.token,
-                       "userId": self.userId
-                       }
-        response = requests.get(url, header_dict)
+        url = "https://www.yikeni.com/xtrash/upload_height/?deviceId=%s&height=%s&token=%s&userId=%s"%(DeviceId,Height,self.token,self.userId)
+        response = requests.get(url)
         print(response.text)
 
 
     def record_action(self,Type):
         """ Type 操作类型  1：开门  2：关门"""
-        url = "https://www.yikeni.com/xtrash/add_operationecord/"
-        body_json = {"type":Type, "userId":self.userId, "token": self.token}
-        response = requests.get(url, body_json)
+        url = "https://www.yikeni.com/xtrash/add_operationecord/?type=%s&userId=%s&token=%s"%(Type,self.userId,self.token)
+        response = requests.get(url)
 
         print(response.text)
 
@@ -657,7 +633,6 @@ class Door(QtWidgets.QDialog):
         res = ser.read(length)
         out_put = json.loads(res)
         return out_put["info"]
-
 
 
 def main():
