@@ -25,7 +25,7 @@ USER_NAME = ""
 DeviceId = "001"
 HOST = "www.yikeni.com"
 PORT = 1883
-ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
+#ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
 
 class MainUi(QtWidgets.QMainWindow):
     def __init__(self):
@@ -200,6 +200,7 @@ class Login(QtWidgets.QDialog):
         info_dict = json.loads(response.text)
         self.token = info_dict["token"]
         self.qrid = info_dict["qrid"]
+
         Qr = createImage.CreateImage()
         Qr.getQrPath(self.qrid)
 
@@ -339,6 +340,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.right_recommend_widget.setLayout(self.right_recommend_layout)
 
         self.recommend_button_1 = QtWidgets.QToolButton()
+        self.recommend_button_1.setObjectName("recommend_button_1")
         #self.recommend_button_1.setText("硬板纸") # 设置按钮文本
         self.recommend_button_1.setIcon(QtGui.QIcon('01.jpg')) # 设置按钮图标
         self.recommend_button_1.setIconSize(QtCore.QSize(300,300)) # 设置图标大小
@@ -346,6 +348,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_1.clicked.connect(self.openDoor)
 
         self.recommend_button_2 = QtWidgets.QToolButton()
+        self.recommend_button_2.setObjectName("recommend_button_2")
         #self.recommend_button_2.setText("所料制品")
         self.recommend_button_2.setIcon(QtGui.QIcon('02.jpg'))
         self.recommend_button_2.setIconSize(QtCore.QSize(300, 300))
@@ -353,6 +356,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_2.clicked.connect(self.openDoor)
 
         self.recommend_button_3 = QtWidgets.QToolButton()
+        self.recommend_button_3.setObjectName("recommend_button_3")
         #self.recommend_button_3.setText("金属类")
         self.recommend_button_3.setIcon(QtGui.QIcon('03.jpg'))
         self.recommend_button_3.setIconSize(QtCore.QSize(300, 300))
@@ -361,6 +365,7 @@ class Deliver(QtWidgets.QMainWindow):
 
 
         self.recommend_button_4 = QtWidgets.QToolButton()
+        self.recommend_button_4.setObjectName("recommend_button_4")
         #self.recommend_button_4.setText("玻璃")
         self.recommend_button_4.setIcon(QtGui.QIcon('04.jpg'))
         self.recommend_button_4.setIconSize(QtCore.QSize(300, 300))
@@ -372,6 +377,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.right_recommend_layout.addWidget(self.recommend_button_3, 0, 2)
 
         self.recommend_button_5 = QtWidgets.QToolButton()
+        self.recommend_button_5.setObjectName("recommend_button_5")
         #self.recommend_button_5.setText("有害类") # 设置按钮文本
         self.recommend_button_5.setIcon(QtGui.QIcon('05.jpg')) # 设置按钮图标
         self.recommend_button_5.setIconSize(QtCore.QSize(300,300)) # 设置图标大小
@@ -379,6 +385,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_5.clicked.connect(self.openDoor)
 
         self.recommend_button_6 = QtWidgets.QToolButton()
+        self.recommend_button_6.setObjectName("recommend_button_6")
         #self.recommend_button_6.setText("")
         self.recommend_button_6.setIcon(QtGui.QIcon('06.jpg'))
         self.recommend_button_6.setIconSize(QtCore.QSize(300, 300))
@@ -386,6 +393,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_6.clicked.connect(self.openDoor)
 
         self.recommend_button_7 = QtWidgets.QToolButton()
+        self.recommend_button_7.setObjectName("recommend_button_7")
         #self.recommend_button_7.setText("其他")
         self.recommend_button_7.setIcon(QtGui.QIcon('07.jpg'))
         self.recommend_button_7.setIconSize(QtCore.QSize(300, 300))
@@ -393,6 +401,7 @@ class Deliver(QtWidgets.QMainWindow):
         self.recommend_button_7.clicked.connect(self.openDoor)
 
         self.recommend_button_8 = QtWidgets.QToolButton()
+        self.recommend_button_8.setObjectName("recommend_button_8")
         #self.recommend_button_8.setText("退出")
         self.recommend_button_8.setIcon(QtGui.QIcon('08.jpg'))
         self.recommend_button_8.setIconSize(QtCore.QSize(300, 300))
@@ -445,24 +454,26 @@ class Deliver(QtWidgets.QMainWindow):
 
     def openDoor(self):
         DoorNO = ""
-        if self.sender() == self.recommend_button_1:
+        ObjectName = self.sender().objectName()
+        if ObjectName == "recommend_button_1":
             DoorNO = "01"
-        if self.sender() == self.recommend_button_2:
+        if ObjectName == "recommend_button_2":
             DoorNO = "02"
-        if self.sender() == self.recommend_button_3:
+        if ObjectName == "recommend_button_3":
             DoorNO = "03"
-        if self.sender() == self.recommend_button_4:
+        if ObjectName == "recommend_button_4":
             DoorNO = "04"
-        if self.sender() == self.recommend_button_5:
+        if ObjectName == "recommend_button_5":
             DoorNO = "05"
-        if self.sender() == self.recommend_button_6:
+        if ObjectName == "recommend_button_6":
             DoorNO = "06"
-        if self.sender() == self.recommend_button_7:
+        if ObjectName == "recommend_button_7":
             DoorNO = "07"
         self.Opendailog = Door()
         self.Opendailog.token = self.token
         self.Opendailog.userId = self.userId
         self.Opendailog.DoorNO = DoorNO
+        self.Opendailog.do_action("OpenDoor")
         self.Opendailog.setWindowModality(QtCore.Qt.ApplicationModal)  # 该模式下，只有该dialog关闭，才可以关闭父界面
         self.Opendailog.show()
         self.Opendailog.exec_()
@@ -474,10 +485,25 @@ class Door(QtWidgets.QDialog):
         self.use_palette()
         self.init_ui()
         self.result = False
-        self.do_action("OpenDoor")
+        self.DoorNO = ""
         self.userId = ""
         self.token = ""
-        self.DoorNO = ""
+        self.init_ser()
+
+    def init_ser(self):
+        """初始化串口"""
+        number = 0
+        while True:
+            ser_name = "/dev/ttyUSB%d"%number
+            try:
+                self._ser = serial.Serial(ser_name, 115200, timeout=0.5)
+                break
+            except:
+                number += 1
+
+    def closeEvent(self, event):
+        """关闭串口"""
+        self._ser.close()
 
     def init_ui(self):
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
@@ -570,8 +596,11 @@ class Door(QtWidgets.QDialog):
         res  = self.do_action("CloseDoor")
         if res:
             photo = self.do_action("Photograph")
+            self.upload_picture(photo)
             Weigh = self.do_action("Weigh")
+            self.upload_weigh(Weigh)
             Height = self.do_action("Height")
+            self.upload_Height(Height)
         self.close()
 
     def btnOK(self):
@@ -622,17 +651,18 @@ class Door(QtWidgets.QDialog):
         """ Type 操作类型  1：开门  2：关门"""
         url = "https://www.yikeni.com/xtrash/add_operationecord/?type=%s&userId=%s&token=%s"%(Type,self.userId,self.token)
         response = requests.get(url)
-
         print(response.text)
 
     def do_action(self, action):
+        print ("DoorNO:" + self.DoorNO)
         input_dict = {"Action":action,"Number":self.DoorNO}
         input_str = json.dumps(input_dict)
-        ser.write(input_str)
-        length = ser.inWaiting()
-        res = ser.read(length)
+        self._ser.write(input_str)
+        length = self._ser.inWaiting()
+        res = self._ser.read(length)
         out_put = json.loads(res)
         return out_put["info"]
+        print (input_dict)
 
 
 def main():
