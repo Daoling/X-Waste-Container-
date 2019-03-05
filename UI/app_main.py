@@ -662,7 +662,7 @@ class Door(QtWidgets.QDialog):
         res = self._ser.read(length).decode("utf-8")
         out_put = json.loads(res)
         print (input_dict)
-        return out_put["info"]ß
+        return out_put["info"]
 
 
 def main():
