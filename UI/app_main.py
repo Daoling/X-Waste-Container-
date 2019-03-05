@@ -454,20 +454,20 @@ class Deliver(QtWidgets.QMainWindow):
 
     def openDoor(self):
         DoorNO = ""
-        ObjectName = self.sender().objectName()
-        if ObjectName == "recommend_button_1":
+        ObjectButton = self.sender()
+        if ObjectButton == self.recommend_button_1:
             DoorNO = "01"
-        if ObjectName == "recommend_button_2":
+        if ObjectButton == self.recommend_button_2:
             DoorNO = "02"
-        if ObjectName == "recommend_button_3":
+        if ObjectButton == self.recommend_button_3:
             DoorNO = "03"
-        if ObjectName == "recommend_button_4":
+        if ObjectButton == self.recommend_button_4:
             DoorNO = "04"
-        if ObjectName == "recommend_button_5":
+        if ObjectButton == self.recommend_button_5:
             DoorNO = "05"
-        if ObjectName == "recommend_button_6":
+        if ObjectButton == self.recommend_button_6:
             DoorNO = "06"
-        if ObjectName == "recommend_button_7":
+        if ObjectButton == self.recommend_button_7:
             DoorNO = "07"
         self.Opendailog = Door()
         self.Opendailog.token = self.token
@@ -657,7 +657,7 @@ class Door(QtWidgets.QDialog):
         print ("DoorNO:" + self.DoorNO)
         input_dict = {"Action":action,"Number":self.DoorNO}
         input_str = json.dumps(input_dict)
-        self._ser.write(input_str)
+        self._ser.write(input_str.encode())
         length = self._ser.inWaiting()
         res = self._ser.read(length)
         out_put = json.loads(res)
