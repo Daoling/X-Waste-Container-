@@ -660,6 +660,7 @@ class Door(QtWidgets.QDialog):
         self._ser.write(input_str.encode())
         length = self._ser.inWaiting()
         res = self._ser.read(length).decode("utf-8")
+        res.replace("'",'"')
         out_put = json.loads(res)
         print (input_dict)
         return out_put["info"]
