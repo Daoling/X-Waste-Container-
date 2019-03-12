@@ -158,53 +158,6 @@ class Login(QtWidgets.QDialog):
         self.client = ""
         self.init_mqtt()
 
-    def on_connect(self, client, userdata, flags, rc):
-        print("Connected with result code " + str(rc))
-        client.subscribe("xtrash")
-
-    def on_message(self, client, userdata, msg):
-        global USER_ID
-        global USER_NAME
-        global TOKEN
-        print(msg.topic + " " + msg.payload.decode("utf-8"))
-        mqtt_message = msg.payload
-        if msg.topic == 'data_msg':
-            jsonData = json.loads(mqtt_message)
-            TOKEN = jsonData["token"]
-            USER_NAME = jsonData["usrname"]
-            USER_ID =  jsonData["usrid"]
-            self.btnOK()
-
-
-    def init_mqtt(self):
-        client_id = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-        self.client = mqtt.Client(client_id)  # ClientId不能重复，所以使用当前时间
-
-        self.client.username_pw_set("secomiot", "#secom&2019@")  # 必须设置，否则会返回「Connected with result code 4」
-
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
-        self.client.connect(HOST, PORT, 60)
-
-        self.client.loop_start()
-
-    def set_input(self):
-        global USER_ID
-        global USER_NAME
-        global TOKEN
-        TOKEN = ""
-        USER_NAME = ""
-        USER_ID = ""
-        url = "https://www.yikeni.com/xtrash/get_qrContent/?deviceId=" + DeviceId
-        response = requests.get(url)
-        info_dict = json.loads(response.text)
-        self.token = info_dict["token"]
-        self.qrid = info_dict["qrid"]
-
-        Qr = createImage.CreateImage()
-        Qr.getQrPath(self.qrid)
-
-
     def init_ui(self):
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
@@ -273,6 +226,56 @@ class Login(QtWidgets.QDialog):
                         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
                     }
                 ''')
+        
+    def on_connect(self, client, userdata, flags, rc):
+        print("Connected with result code " + str(rc))
+        #client.subscribe("xtrash")
+        client.subscribe("xtrash/0001")
+
+    def on_message(self, client, userdata, msg):
+        global USER_ID
+        global USER_NAME
+        global TOKEN
+        print(msg.topic + " " + msg.payload.decode("utf-8"))
+        mqtt_message = msg.payload
+        if msg.topic == r'xtrash/0001':
+            global LOGIN_SIGN
+            LOGIN_SIGN = True
+            jsonData = json.loads(mqtt_message)
+            #TOKEN = jsonData["token"]
+            USER_NAME = jsonData["usrname"]
+            USER_ID =  jsonData["userId"]
+            self.client.loop_stop()
+            self.close()
+
+
+    def init_mqtt(self):
+        client_id = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+        self.client = mqtt.Client(client_id)  # ClientId不能重复，所以使用当前时间
+
+        self.client.username_pw_set("secomiot", "#secom&2019@")  # 必须设置，否则会返回「Connected with result code 4」
+
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.client.connect(HOST, PORT, 60)
+
+        self.client.loop_start()
+
+    def set_input(self):
+        global USER_ID
+        global USER_NAME
+        global TOKEN
+        TOKEN = ""
+        USER_NAME = ""
+        USER_ID = ""
+        url = "https://www.yikeni.com/xtrash/get_qrContent/?deviceId=" + DeviceId
+        response = requests.get(url)
+        info_dict = json.loads(response.text)
+        self.token = info_dict["token"]
+        self.qrid = info_dict["qrid"]
+
+        Qr = createImage.CreateImage()
+        Qr.getQrPath(self.qrid)
 
     def use_palette(self):
         self.setWindowTitle("扫码登录")
