@@ -589,13 +589,13 @@ class Door(QtWidgets.QDialog):
         self.right_recommend_label.setText("60秒后关闭仓门")
         self.timer.stop()
         res = self.do_action("CloseDoor")
-        if res:
-            photo = self.do_action("Photograph")
-            self.upload_picture(photo)
-            Weigh = self.do_action("Weigh")
-            self.upload_weigh(Weigh)
-            Height = self.do_action("Height")
-            self.upload_Height(Height)
+        #if res:
+        #    photo = self.do_action("Photograph")
+        #    self.upload_picture(photo)
+        #    Weigh = self.do_action("Weigh")
+        #    self.upload_weigh(Weigh)
+        #    Height = self.do_action("Height")
+        #    self.upload_Height(Height)
         self.close()
 
     def btnOK(self):
@@ -654,6 +654,8 @@ class Door(QtWidgets.QDialog):
         print ("DoorNO:" + self.DoorNO)
         input_dict = {"Action": action, "Number": self.DoorNO}
         input_str = json.dumps(input_dict)
+        print(action)
+        print(input_str)
         self._ser.write(input_str.encode())
         #length = self._ser.inWaiting()
         #res = self._ser.read(length).decode("utf-8")
