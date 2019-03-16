@@ -1,5 +1,5 @@
 # coding:utf-8
-from PyQt5 import QtCore,QtGui,QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import qtawesome
 import serial
@@ -25,7 +25,9 @@ USER_NAME = ""
 DeviceId = "001"
 HOST = "www.yikeni.com"
 PORT = 1883
-#ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
+
+
+# ser=serial.Serial("/dev/ttyUSB0",115200,timeout=0.5)
 
 class MainUi(QtWidgets.QMainWindow):
     def __init__(self):
@@ -41,19 +43,19 @@ class MainUi(QtWidgets.QMainWindow):
         self.left_widget = QtWidgets.QWidget()  # 创建左侧部件
         self.left_widget.setObjectName('left_widget')
         self.left_layout = QtWidgets.QGridLayout()  # 创建左侧部件的网格布局层
-        self.left_widget.setLayout(self.left_layout) # 设置左侧部件布局为网格
+        self.left_widget.setLayout(self.left_layout)  # 设置左侧部件布局为网格
 
-        self.right_widget = QtWidgets.QWidget() # 创建右侧部件
+        self.right_widget = QtWidgets.QWidget()  # 创建右侧部件
         self.right_widget.setObjectName('right_widget')
         self.right_layout = QtWidgets.QGridLayout()
-        self.right_widget.setLayout(self.right_layout) # 设置右侧部件布局为网格
+        self.right_widget.setLayout(self.right_layout)  # 设置右侧部件布局为网格
 
-        #self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
-        self.main_layout.addWidget(self.right_widget,0,0,12,12) # 右侧部件在第0行第3列，占8行9列
-        self.setCentralWidget(self.main_widget) # 设置窗口主部件
+        # self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.right_widget, 0, 0, 12, 12)  # 右侧部件在第0行第3列，占8行9列
+        self.setCentralWidget(self.main_widget)  # 设置窗口主部件
 
-        self.right_bar_widget = QtWidgets.QWidget() # 右侧顶部搜索框部件
-        self.right_bar_layout = QtWidgets.QGridLayout() # 右侧顶部搜索框网格布局
+        self.right_bar_widget = QtWidgets.QWidget()  # 右侧顶部搜索框部件
+        self.right_bar_layout = QtWidgets.QGridLayout()  # 右侧顶部搜索框网格布局
         self.right_bar_widget.setLayout(self.right_bar_layout)
 
         self.right_recommend_label = QtWidgets.QLabel(self)
@@ -63,15 +65,15 @@ class MainUi(QtWidgets.QMainWindow):
 
         self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
 
-        self.right_recommend_widget = QtWidgets.QWidget() # 推荐封面部件
-        self.right_recommend_layout = QtWidgets.QGridLayout() # 推荐封面网格布局
+        self.right_recommend_widget = QtWidgets.QWidget()  # 推荐封面部件
+        self.right_recommend_layout = QtWidgets.QGridLayout()  # 推荐封面网格布局
         self.right_recommend_widget.setLayout(self.right_recommend_layout)
 
         self.recommend_button_1 = QtWidgets.QToolButton()
-        self.recommend_button_1.setText("视频介绍") # 设置按钮文本
-        self.recommend_button_1.setIcon(QtGui.QIcon('1.jpg')) # 设置按钮图标
-        self.recommend_button_1.setIconSize(QtCore.QSize(300,300)) # 设置图标大小
-        self.recommend_button_1.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon) # 设置按钮形式为上图下文
+        self.recommend_button_1.setText("视频介绍")  # 设置按钮文本
+        self.recommend_button_1.setIcon(QtGui.QIcon('1.jpg'))  # 设置按钮图标
+        self.recommend_button_1.setIconSize(QtCore.QSize(300, 300))  # 设置图标大小
+        self.recommend_button_1.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)  # 设置按钮形式为上图下文
 
         self.recommend_button_2 = QtWidgets.QToolButton()
         self.recommend_button_2.setText("垃圾回收")
@@ -85,15 +87,14 @@ class MainUi(QtWidgets.QMainWindow):
         self.recommend_button_3.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_3.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
 
-        self.right_recommend_layout.addWidget(self.recommend_button_1,0,0)
-        self.right_recommend_layout.addWidget(self.recommend_button_2,0,1)
+        self.right_recommend_layout.addWidget(self.recommend_button_1, 0, 0)
+        self.right_recommend_layout.addWidget(self.recommend_button_2, 0, 1)
         self.right_recommend_layout.addWidget(self.recommend_button_3, 0, 2)
 
-       # self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
+        # self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
         self.right_layout.addWidget(self.right_recommend_widget, 2, 0, 2, 9)
 
         self.recommend_button_2.clicked.connect(self.showLoginDialog)
-
 
         self.right_widget.setStyleSheet('''
             QWidget#right_widget{
@@ -125,7 +126,7 @@ class MainUi(QtWidgets.QMainWindow):
         self.dialog.show()
         self.dialog.exec_()
         if LOGIN_SIGN:
-            #print( self.dialog.exec_())
+            # print( self.dialog.exec_())
             self.shwoDeliverDialog()
 
     def shwoDeliverDialog(self):
@@ -134,7 +135,6 @@ class MainUi(QtWidgets.QMainWindow):
         self.Deliverdialog.userId = USER_ID
         self.Deliverdialog.setWindowModality(QtCore.Qt.ApplicationModal)  # 该模式下，只有该dialog关闭，才可以关闭父界面
         self.Deliverdialog.showMaximized()
-
 
     def use_palette(self):
         window_pale = QtGui.QPalette()
@@ -163,24 +163,24 @@ class Login(QtWidgets.QDialog):
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
         self.main_widget.setLayout(self.main_layout)  # 设置窗口主部件布局为网格布局
 
-        self.right_widget = QtWidgets.QWidget() # 创建右侧部件
+        self.right_widget = QtWidgets.QWidget()  # 创建右侧部件
         self.right_widget.setObjectName('right_widget')
         self.right_layout = QtWidgets.QGridLayout()
-        self.right_widget.setLayout(self.right_layout) # 设置右侧部件布局为网格
+        self.right_widget.setLayout(self.right_layout)  # 设置右侧部件布局为网格
 
-        #self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
-        self.main_layout.addWidget(self.right_widget,0,0,12,12) # 右侧部件在第0行第3列，占8行9列
+        # self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.right_widget, 0, 0, 12, 12)  # 右侧部件在第0行第3列，占8行9列
 
         self.right_recommend_label = QtWidgets.QLabel(self)
         self.right_recommend_label.setText("")
         self.right_recommend_label.setStyleSheet(
             "font:60pt '楷体';color:red")
-        self.right_recommend_label.setAlignment(QtCore.Qt.AlignTop| QtCore.Qt.AlignRight)
+        self.right_recommend_label.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignRight)
 
         self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
 
-        self.right_recommend_widget = QtWidgets.QWidget() # 推荐封面部件
-        self.right_recommend_layout = QtWidgets.QGridLayout() # 推荐封面网格布局
+        self.right_recommend_widget = QtWidgets.QWidget()  # 推荐封面部件
+        self.right_recommend_layout = QtWidgets.QGridLayout()  # 推荐封面网格布局
         self.right_recommend_widget.setLayout(self.right_recommend_layout)
 
         self.recommend_button = QtWidgets.QToolButton()
@@ -190,13 +190,12 @@ class Login(QtWidgets.QDialog):
         self.recommend_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)  # 设置按钮形式为上图下文
         self.recommend_button.clicked.connect(self.btnOK)
 
+        self.right_recommend_layout.addWidget(self.recommend_button, 0, 1)
 
-        self.right_recommend_layout.addWidget(self.recommend_button,0,1)
-
-       # self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
+        # self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
         self.right_layout.addWidget(self.right_recommend_widget, 3, 0, 2, 9)
 
-        #self.recommend_button.accepted.connect(self.accept)
+        # self.recommend_button.accepted.connect(self.accept)
 
         self.btn_1 = QtWidgets.QPushButton("取消登录")
         self.btn_1.clicked.connect(self.btnCancel)
@@ -207,7 +206,6 @@ class Login(QtWidgets.QDialog):
         self.timer.start(1000)  # 设置计时间隔并启动
 
         self.setLayout(self.main_layout)
-
 
         self.right_widget.setStyleSheet('''
                     QWidget#right_widget{
@@ -226,10 +224,10 @@ class Login(QtWidgets.QDialog):
                         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
                     }
                 ''')
-        
+
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code " + str(rc))
-        #client.subscribe("xtrash")
+        # client.subscribe("xtrash")
         client.subscribe("xtrash/0001")
 
     def on_message(self, client, userdata, msg):
@@ -237,17 +235,17 @@ class Login(QtWidgets.QDialog):
         global USER_NAME
         global TOKEN
         print(msg.topic + " " + msg.payload.decode("utf-8"))
-        mqtt_message = msg.payload
+        #mqtt_message = msg.payload
         if msg.topic == r'xtrash/0001':
+            print ("get topic sucessed")
             global LOGIN_SIGN
             LOGIN_SIGN = True
-            jsonData = json.loads(mqtt_message)
-            #TOKEN = jsonData["token"]
-            USER_NAME = jsonData["usrname"]
-            USER_ID =  jsonData["userId"]
+            #jsonData = json.loads(mqtt_message)
+            # TOKEN = jsonData["token"]
+            #USER_NAME = jsonData["usrname"]
+            #USER_ID = jsonData["userId"]
             self.client.loop_stop()
             self.close()
-
 
     def init_mqtt(self):
         client_id = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
@@ -294,7 +292,6 @@ class Login(QtWidgets.QDialog):
             self.btnCancel()
         self.right_recommend_label.setText(str(second) + "秒")
 
-
     def btnCancel(self):
         global LOGIN_SIGN
         LOGIN_SIGN = False
@@ -315,7 +312,6 @@ class Login(QtWidgets.QDialog):
         self.close()
 
 
-
 class Deliver(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -329,30 +325,30 @@ class Deliver(QtWidgets.QMainWindow):
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
         self.main_widget.setLayout(self.main_layout)  # 设置窗口主部件布局为网格布局
 
-        self.right_widget = QtWidgets.QWidget() # 创建右侧部件
+        self.right_widget = QtWidgets.QWidget()  # 创建右侧部件
         self.right_widget.setObjectName('right_widget')
         self.right_layout = QtWidgets.QGridLayout()
-        self.right_widget.setLayout(self.right_layout) # 设置右侧部件布局为网格
+        self.right_widget.setLayout(self.right_layout)  # 设置右侧部件布局为网格
 
-        #self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
-        self.main_layout.addWidget(self.right_widget,0,0,12,12) # 右侧部件在第0行第3列，占8行9列
-        self.setCentralWidget(self.main_widget) # 设置窗口主部件
+        # self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.right_widget, 0, 0, 12, 12)  # 右侧部件在第0行第3列，占8行9列
+        self.setCentralWidget(self.main_widget)  # 设置窗口主部件
 
-        self.right_recommend_widget = QtWidgets.QWidget() # 推荐封面部件
-        self.right_recommend_layout = QtWidgets.QGridLayout() # 推荐封面网格布局
+        self.right_recommend_widget = QtWidgets.QWidget()  # 推荐封面部件
+        self.right_recommend_layout = QtWidgets.QGridLayout()  # 推荐封面网格布局
         self.right_recommend_widget.setLayout(self.right_recommend_layout)
 
         self.recommend_button_1 = QtWidgets.QToolButton()
         self.recommend_button_1.setObjectName("recommend_button_1")
-        #self.recommend_button_1.setText("硬板纸") # 设置按钮文本
-        self.recommend_button_1.setIcon(QtGui.QIcon('01.jpg')) # 设置按钮图标
-        self.recommend_button_1.setIconSize(QtCore.QSize(300,300)) # 设置图标大小
-        self.recommend_button_1.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon) # 设置按钮形式为上图下文
+        # self.recommend_button_1.setText("硬板纸") # 设置按钮文本
+        self.recommend_button_1.setIcon(QtGui.QIcon('01.jpg'))  # 设置按钮图标
+        self.recommend_button_1.setIconSize(QtCore.QSize(300, 300))  # 设置图标大小
+        self.recommend_button_1.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)  # 设置按钮形式为上图下文
         self.recommend_button_1.clicked.connect(self.openDoor)
 
         self.recommend_button_2 = QtWidgets.QToolButton()
         self.recommend_button_2.setObjectName("recommend_button_2")
-        #self.recommend_button_2.setText("所料制品")
+        # self.recommend_button_2.setText("所料制品")
         self.recommend_button_2.setIcon(QtGui.QIcon('02.jpg'))
         self.recommend_button_2.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_2.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -360,36 +356,35 @@ class Deliver(QtWidgets.QMainWindow):
 
         self.recommend_button_3 = QtWidgets.QToolButton()
         self.recommend_button_3.setObjectName("recommend_button_3")
-        #self.recommend_button_3.setText("金属类")
+        # self.recommend_button_3.setText("金属类")
         self.recommend_button_3.setIcon(QtGui.QIcon('03.jpg'))
         self.recommend_button_3.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_3.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.recommend_button_3.clicked.connect(self.openDoor)
 
-
         self.recommend_button_4 = QtWidgets.QToolButton()
         self.recommend_button_4.setObjectName("recommend_button_4")
-        #self.recommend_button_4.setText("玻璃")
+        # self.recommend_button_4.setText("玻璃")
         self.recommend_button_4.setIcon(QtGui.QIcon('04.jpg'))
         self.recommend_button_4.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_4.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.recommend_button_4.clicked.connect(self.openDoor)
 
-        self.right_recommend_layout.addWidget(self.recommend_button_1,0,0)
-        self.right_recommend_layout.addWidget(self.recommend_button_2,0,1)
+        self.right_recommend_layout.addWidget(self.recommend_button_1, 0, 0)
+        self.right_recommend_layout.addWidget(self.recommend_button_2, 0, 1)
         self.right_recommend_layout.addWidget(self.recommend_button_3, 0, 2)
 
         self.recommend_button_5 = QtWidgets.QToolButton()
         self.recommend_button_5.setObjectName("recommend_button_5")
-        #self.recommend_button_5.setText("有害类") # 设置按钮文本
-        self.recommend_button_5.setIcon(QtGui.QIcon('05.jpg')) # 设置按钮图标
-        self.recommend_button_5.setIconSize(QtCore.QSize(300,300)) # 设置图标大小
-        self.recommend_button_5.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon) # 设置按钮形式为上图下文
+        # self.recommend_button_5.setText("有害类") # 设置按钮文本
+        self.recommend_button_5.setIcon(QtGui.QIcon('05.jpg'))  # 设置按钮图标
+        self.recommend_button_5.setIconSize(QtCore.QSize(300, 300))  # 设置图标大小
+        self.recommend_button_5.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)  # 设置按钮形式为上图下文
         self.recommend_button_5.clicked.connect(self.openDoor)
 
         self.recommend_button_6 = QtWidgets.QToolButton()
         self.recommend_button_6.setObjectName("recommend_button_6")
-        #self.recommend_button_6.setText("")
+        # self.recommend_button_6.setText("")
         self.recommend_button_6.setIcon(QtGui.QIcon('06.jpg'))
         self.recommend_button_6.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_6.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -397,7 +392,7 @@ class Deliver(QtWidgets.QMainWindow):
 
         self.recommend_button_7 = QtWidgets.QToolButton()
         self.recommend_button_7.setObjectName("recommend_button_7")
-        #self.recommend_button_7.setText("其他")
+        # self.recommend_button_7.setText("其他")
         self.recommend_button_7.setIcon(QtGui.QIcon('07.jpg'))
         self.recommend_button_7.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_7.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -405,12 +400,11 @@ class Deliver(QtWidgets.QMainWindow):
 
         self.recommend_button_8 = QtWidgets.QToolButton()
         self.recommend_button_8.setObjectName("recommend_button_8")
-        #self.recommend_button_8.setText("退出")
+        # self.recommend_button_8.setText("退出")
         self.recommend_button_8.setIcon(QtGui.QIcon('08.jpg'))
         self.recommend_button_8.setIconSize(QtCore.QSize(300, 300))
         self.recommend_button_8.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.recommend_button_8.clicked.connect(self.exit)
-
 
         self.right_recommend_layout.addWidget(self.recommend_button_4, 1, 0)
         self.right_recommend_layout.addWidget(self.recommend_button_5, 1, 1)
@@ -497,7 +491,7 @@ class Door(QtWidgets.QDialog):
         """初始化串口"""
         number = 0
         while True:
-            ser_name = "/dev/ttyUSB%d"%number
+            ser_name = "/dev/ttyUSB%d" % number
             try:
                 self._ser = serial.Serial(ser_name, 115200, timeout=0.5)
                 break
@@ -513,24 +507,24 @@ class Door(QtWidgets.QDialog):
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
         self.main_widget.setLayout(self.main_layout)  # 设置窗口主部件布局为网格布局
 
-        self.right_widget = QtWidgets.QWidget() # 创建右侧部件
+        self.right_widget = QtWidgets.QWidget()  # 创建右侧部件
         self.right_widget.setObjectName('right_widget')
         self.right_layout = QtWidgets.QGridLayout()
-        self.right_widget.setLayout(self.right_layout) # 设置右侧部件布局为网格
+        self.right_widget.setLayout(self.right_layout)  # 设置右侧部件布局为网格
 
-        #self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
-        self.main_layout.addWidget(self.right_widget,0,0,12,12) # 右侧部件在第0行第3列，占8行9列
+        # self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.right_widget, 0, 0, 12, 12)  # 右侧部件在第0行第3列，占8行9列
 
         self.right_recommend_label = QtWidgets.QLabel(self)
         self.right_recommend_label.setText("60秒后关闭仓门")
         self.right_recommend_label.setStyleSheet(
             "font:60pt '楷体';color:red")
-        self.right_recommend_label.setAlignment(QtCore.Qt.AlignTop| QtCore.Qt.AlignRight)
+        self.right_recommend_label.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignRight)
 
         self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
 
-        self.right_recommend_widget = QtWidgets.QWidget() # 推荐封面部件
-        self.right_recommend_layout = QtWidgets.QGridLayout() # 推荐封面网格布局
+        self.right_recommend_widget = QtWidgets.QWidget()  # 推荐封面部件
+        self.right_recommend_layout = QtWidgets.QGridLayout()  # 推荐封面网格布局
         self.right_recommend_widget.setLayout(self.right_recommend_layout)
 
         self.recommend_button = QtWidgets.QToolButton()
@@ -540,19 +534,18 @@ class Door(QtWidgets.QDialog):
         self.recommend_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)  # 设置按钮形式为上图下文
         self.recommend_button.clicked.connect(self.btnOK)
 
-        self.right_recommend_layout.addWidget(self.recommend_button,0,1)
+        self.right_recommend_layout.addWidget(self.recommend_button, 0, 1)
 
-       # self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
+        # self.right_layout.addWidget(self.right_recommend_label, 1, 0, 1, 9)
         self.right_layout.addWidget(self.right_recommend_widget, 3, 0, 2, 9)
 
-        #self.recommend_button.accepted.connect(self.accept)
+        # self.recommend_button.accepted.connect(self.accept)
 
         self.timer = QtCore.QTimer(self)  # 初始化一个定时器
         self.timer.timeout.connect(self.Cancel)  # 计时结束调用operate()方法
         self.timer.start(1000)  # 设置计时间隔并启动
 
         self.setLayout(self.main_layout)
-
 
         self.right_widget.setStyleSheet('''
                     QWidget#right_widget{
@@ -589,14 +582,13 @@ class Door(QtWidgets.QDialog):
             self.btnCancel()
         self.right_recommend_label.setText(str(second) + "秒")
 
-
     def btnCancel(self):
         """超时关门"""
         global LOGIN_SIGN
         LOGIN_SIGN = False
         self.right_recommend_label.setText("60秒后关闭仓门")
         self.timer.stop()
-        res  = self.do_action("CloseDoor")
+        res = self.do_action("CloseDoor")
         if res:
             photo = self.do_action("Photograph")
             self.upload_picture(photo)
@@ -614,21 +606,21 @@ class Door(QtWidgets.QDialog):
         self.right_recommend_label.setText("60秒后关闭仓门")
         self.timer.stop()
         res = self.do_action("CloseDoor")
-        if res:
-            photo = self.do_action("Photograph")
-            self.upload_picture(photo)
-            Weigh = self.do_action("Weigh")
-            self.upload_weigh(Weigh)
-            Height = self.do_action("Height")
-            self.upload_Height(Height)
+        #if res:
+        #    photo = self.do_action("Photograph")
+        #    self.upload_picture(photo)
+        #    Weigh = self.do_action("Weigh")
+        #    self.upload_weigh(Weigh)
+        #    Height = self.do_action("Height")
+        #    self.upload_Height(Height)
         self.close()
 
     def upload_picture(self, picture):
-        url = "https://www.yikeni.com/xtrash/upload_picture/?deviceId=%s&token=%s&type=1"%(DeviceId,self.token)
+        url = "https://www.yikeni.com/xtrash/upload_picture/?deviceId=%s&token=%s&type=1" % (DeviceId, self.token)
         header_dict = {
-                    'Api-Key':'InhpeWFuZzA4MDdJBtx4AWlPpI_Oxx1Ki8',
-                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36'
-                    }
+            'Api-Key': 'InhpeWFuZzA4MDdJBtx4AWlPpI_Oxx1Ki8',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36'
+        }
 
         time_string = datetime.datetime.now().strftime("%Y-%m-%d_%H:%S:%M")
 
@@ -640,33 +632,36 @@ class Door(QtWidgets.QDialog):
         print(response.text)
 
     def upload_weigh(self, Weigh):
-        url = "https://www.yikeni.com/xtrash/upload_weight/?deviceId=%s&weight=%s&token=%s&userId=%s"%(DeviceId,Weigh,self.token,self.userId)
+        url = "https://www.yikeni.com/xtrash/upload_weight/?deviceId=%s&weight=%s&token=%s&userId=%s" % (
+        DeviceId, Weigh, self.token, self.userId)
         response = requests.get(url)
         print(response.text)
 
     def upload_Height(self, Height):
-        url = "https://www.yikeni.com/xtrash/upload_height/?deviceId=%s&height=%s&token=%s&userId=%s"%(DeviceId,Height,self.token,self.userId)
+        url = "https://www.yikeni.com/xtrash/upload_height/?deviceId=%s&height=%s&token=%s&userId=%s" % (
+        DeviceId, Height, self.token, self.userId)
         response = requests.get(url)
         print(response.text)
 
-
-    def record_action(self,Type):
+    def record_action(self, Type):
         """ Type 操作类型  1：开门  2：关门"""
-        url = "https://www.yikeni.com/xtrash/add_operationecord/?type=%s&userId=%s&token=%s"%(Type,self.userId,self.token)
+        url = "https://www.yikeni.com/xtrash/add_operationecord/?type=%s&userId=%s&token=%s" % (
+        Type, self.userId, self.token)
         response = requests.get(url)
         print(response.text)
 
     def do_action(self, action):
         print ("DoorNO:" + self.DoorNO)
-        input_dict = {"Action":action,"Number":self.DoorNO}
+        input_dict = {"Action": action, "Number": self.DoorNO}
         input_str = json.dumps(input_dict)
         self._ser.write(input_str.encode())
-        length = self._ser.inWaiting()
-        res = self._ser.read(length).decode("utf-8")
-        res.replace("'",'"')
-        out_put = json.loads(res)
-        print (input_dict)
-        return out_put["info"]
+        #length = self._ser.inWaiting()
+        #res = self._ser.read(length).decode("utf-8")
+        #res.replace("'", '"')
+        #out_put = json.loads(res)
+        #print (input_dict)
+        #return out_put["info"]
+        return 1
 
 
 def main():
@@ -675,6 +670,7 @@ def main():
 
     gui.showFullScreen()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()
