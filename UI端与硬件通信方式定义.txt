@@ -1,23 +1,23 @@
 UI端与硬件通信方式定义
 1. 消息体采用json字符串的格式
 2. 消息体格式如下：
-   UI端下发求情格式： '{"Action","动作","Number":"编号"}' 
+   UI端下发求情格式： {"Action","动作","Number":"编号"}
        具体内容以1号仓为例如下：
-           打开1号仓门    '{"Action":"OpenDoor","Number":"01"}'
-           关闭1号仓门    '{"Action":"CloseDoor","Number":"01"}'
-           1号摄像头拍照  '{"Action":"Photograph","Number":"01"}'
-           1号仓称重      '{"Action":"Weigh","Number":"01"}'
-           测量1号仓空间   '{"Action":"Height","Number":"01"}'
-   设备端串口反馈到UI端端消息体格式：'{"Action","动作","Number":"编号"，"info":0}'
+           打开1号仓门    {"Action": "OpenDoor", "Number": "01"}
+           关闭1号仓门    {"Action": "CloseDoor", "Number": "01"}
+           1号摄像头拍照  {"Action": "Photograph", "Number": "01"}
+           1号仓称重      {"Action": "Weigh", "Number": "01"}
+           测量1号仓空间   {"Action": "Height", "Number": "01"}
+   设备端串口反馈到UI端端消息体格式：{"Action", "动作", "Number": "编号", "info": 0}
        其中info对应的信息无"",1代表成功，0代表失败
        具体内容以1号仓为例如下：
-           打开1号仓门成功    '{"Action":"OpenDoor","Number":"01","info":1}'
-           打开1号仓门失败    '{"Action":"OpenDoor","Number":"01","info":0}'
-           关闭1号仓门成功    '{"Action":"CloseDoor","Number":"01","info":1}'
-           关闭1号仓门失败    '{"Action":"CloseDoor","Number":"01","info":0}'
+           打开1号仓门成功    {"Action": "OpenDoor", "Number": "01", "info": 1}
+           打开1号仓门失败    {"Action": "OpenDoor", "Number": "01", "info": 0}
+           关闭1号仓门成功    {"Action": "CloseDoor", "Number": "01", "info": 1}
+           关闭1号仓门失败    {"Action": "CloseDoor", "Number": "01", "info": 0}
            1号摄像头拍照，获取照片文件流aaaaaaaa                           
-                                '{"Action":"Photograph","Number":"01","info":"aaaaaaaa"}'
-           1号仓称重35.7公斤      '{"Action":"Weigh","Number":"01","info":35.7}'
-           测量1号仓空间，高度20   '{"Action":"Height","Number":"01","info":20}'
+                                {"Action": "Photograph", "Number": "01", "info": "aaaaaaaa"}
+           1号仓称重35.7公斤      {"Action": "Weigh", "Number": "01", "info": 35.7}
+           测量1号仓空间，高度20   {"Action": "Height", "Number": "01", "info": 20}
 3.  UI与串口通信默认使用"/dev/ttyUSB0" 0号串口，若该串口被占用，编号加1.以此类推，直到找到可用串口，进行通信。
 
