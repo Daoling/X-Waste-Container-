@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI  Lab</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+   <link href="{% static "css/reset.css" %}" rel="stylesheet">
+    <link href="{% static "css/main.css" %}" rel="stylesheet">
+    <link href="{% static "css/media.css" %}" rel="stylesheet">
+    <script src="{% static "js/vue.js" %}" ></script>
+    <script src="{% static "js/lrz.all.bundle.js" %}" ></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="header">
+            <div class="contentWrapper">
+
+            </div>
+
+        </div>
+        <div id="mainContainer">
+            <div class="bannerContainer step1">
+                <div class="contentWrapper">
+
+                </div>
+            </div>
+
+            <div class="contentWrapper">
+                <div class="uploadReceiptBox">
+                    <img src={{ imgId }} style="max-width:550px; max-hegith:400px; ">
+                    </div>
+    <div align="right" style="padding-top:20px;float:right;padding-right:5%;">
+                  </div>
+                </div>
+
+            </div>
+
+        </div>
+        <textarea id="fileName" name="fileName" form="usrform" style="display: none;"></textarea>
+        <div id="footer">
+            <div class="contentWrapper">
+                <p>© 2018, Accenture AI lab All Rights Reserved</p>
+            </div>
+        </div>
+
+        <!-- popup area -->
+        <div class="popupContainer" v-show="isShowPopup" style="display: none">
+            <div class="maskerLayer"></div>
+            <div class="errorPopContainer">
+                <div class="wrapper">
+                    <a class="close" v-on:click="hidePopup()"></a>
+                    <div class="topWrapper">
+                        <span class="popErrorIcon"></span>
+                    </div>
+                    <h5>Oops!</h5>
+                    <p>[[ popupInfo ]]</p>
+                    <a class="confirmBtn" v-on:click="hidePopup()">ok</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        vm = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data:{
+                isShowPopup : false,
+                isShowLoading: false,
+                showImageName: '',
+                popupInfo:'',
+                config: {
+                    width: 1500,
+                    height: 1500,
+                    quality: 0.8
+                },
+                imageIsReceipt: 1
+            },
+            mounted:function(){
+                this.init()
+            },
+            methods: {
+                init: function(){
+                    if(this.imageIsReceipt == 0){
+                        this.isShowPopup = true;
+                        this.popupInfo = 'Video upload failed，error code is 0！';
+                    }
+                    if(this.imageIsReceipt == 4){
+                        this.isShowPopup = true;
+                        this.popupInfo = 'File duplication, please select other file！';
+                    }
+                },
+
+                hidePopup: function(){
+                    this.isShowPopup = false;
+                    this.popupInfo = '';
+                },
+                showLoading: function(){
+                    this.isShowLoading = true;
+                },
+                chooseVideo: function () {
+                    var obj = document.getElementById("videoid");
+                    var fileName = obj.files[0].name;
+                    fileName = fileName.replace(/\s/g, "")
+
+                    if(!/\.(avi|mp4|AVI|MP4)$/.test(fileName))
+                    {
+                        this.popupInfo = 'Please select the MP4 or avi video files!';
+                        this.isShowPopup = true;
+                        obj.value = "";
+                        return false;
+                    }
+
+                    var filemaxsize = 1024*150;//150M
+                    var file = obj.files[0];
+
+                    fileSize = file.size;
+                    console.log('filename : '  + fileName);
+                    console.log('fileSize : '  + fileSize);
+
+                    var size = fileSize / 1024;
+                    if(size>filemaxsize){
+
+                        this.popupInfo = 'Please select a file less than 150MB！';
+                        this.isShowPopup = true;
+                        obj.value = "";
+                        return false;
+
+                    }
+
+
+
+                    this.showImageName = fileName;
+                    document.getElementById("fileName").value = fileName;
+
+
+                }
+            }
+        });
+    </script>
+    </body>
+</html>

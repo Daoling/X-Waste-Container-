@@ -1,0 +1,141 @@
+
+@media only screen and (max-width: 736px) {
+    #header .menu{
+        margin-left:0;
+    }
+    #header .menu li {
+        width:200px;
+        padding:0 18px;
+    }
+    #header .menu li a{
+        font-size: 12px;
+    }
+    .contentWrapper{
+        width: 100%;
+
+    }
+    .mobile_show{
+        display: block;
+    }
+    #mainContainer {
+        min-height: auto;
+    }
+    #mainContainer .contentWrapper{
+        padding:0 12px;
+    }
+    .bannerContainer .banner{
+        width: 60%!important;
+        margin-bottom: 20px;
+    }
+    .bannerContainer .contentWrapper .txtContainer {
+        position: absolute;
+        width: 100%;
+        left: 16px;
+        right:10px;
+        width:auto;
+        top: 0;
+        padding-right: 0;
+    }
+    .bannerContainer .contentWrapper .txtContainer .title {
+        font-size: 16px;
+        padding-top: 20px;
+    }
+    .bannerContainer .txtContainer .description{
+        font-size:12px;
+        margin-bottom:10px;
+    }
+    .bannerContainer .advantage ul li{
+        margin-top: 10px;
+        font-size:12px;
+        float:none;
+    }
+    .advantage .icons {
+        width: 20px;
+        height: 20px;
+        background-size: 420px 23px;
+        margin-right: 6px;
+        margin-top: -2px;
+    }
+    .advantage .icons.icon2{
+        background-position: -106px -2px;
+    }
+    .advantage .icons.icon3{
+        background-position: -203px -2px;
+    }
+    .advantage .icons.icon4{
+        background-position: -300px -2px;
+    }
+    .bannerContainer .banner {
+        background-position: right bottom!important;
+    }
+
+    .uploadReceiptBox .file{
+        height:auto;
+    }
+    .uploadReceiptBox {
+        width: 90%;
+        margin: 0 auto;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .uploadReceiptBox h3 {
+        margin-bottom: 0;
+    }
+    .uploadReceiptBox .file label{
+        display: none;
+    }
+    .userdefined-file {
+        position: static;
+        height:auto;
+    }
+    .userdefined-file input[type="text"] {
+        height:30px;
+        line-height: 30px;
+        border: 0;
+        width: 100%;
+    }
+    .userdefined-file button{
+        display: block;
+        width: 80px;
+    }
+    .uploadReceiptBox .file input[type="file"] {
+        left: 0;
+        width: 80px;
+        top: 40px;
+    }
+    .analyzeReceipt{
+        bottom: -2px;
+        top: initial;
+        width: 80px;
+    }
+    .contentWrapper .leftWrapper, .contentWrapper .rightWrapper{
+        float: none;
+        width: 100%;
+    }
+    .contentWrapper .leftWrapper{
+        border-right: 0;
+    }
+    .contentWrapper .leftWrapper img{
+        display: block;
+        width: 100%;
+
+    }
+    .contentWrapper .rightWrapper h3 {
+        text-align: left;
+    }
+    .contentWrapper .rightWrapper .resultTbl {
+        width: 100%;
+        float: none;
+    }
+    .mobile_hidden{
+        display: none;
+    }
+    .receiptLists thead tr th,.receiptLists tr td {
+        font-size: 12px;
+    }
+    .receiptLists tfoot .pagination {
+        width: auto;
+        margin: 0 auto;
+    }
+}

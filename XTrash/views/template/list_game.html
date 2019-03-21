@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>溜达族</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <link href="{% static "css/reset.css" %}" rel="stylesheet">
+    <link href="{% static "css/main.css" %}" rel="stylesheet">
+    <link href="{% static "css/media.css" %}" rel="stylesheet">
+    <script src="{% static "js/jquery.js" %}" ></script>
+
+</head>
+<body>
+
+     <div id="header">
+        <div class="contentWrapper">
+
+             <ul class="menu">
+                <li class="active"><a href="../list_game">活动表</a></li>
+                <li "><a href="../list_user">用户表</a></li>
+            </ul>
+
+        </div>
+
+    </div>
+    <div class="contentWrapper">
+              <div align="left" style="padding-top:20px;float:left;padding-left:5%;">
+                  <h2>搜索条件</h2>
+            </div>
+        </div>
+
+    <div align="top" style="padding-top:5px;float:top;">
+        <form  id="usrform" method="get" action="../list_game/" enctype="multipart/form-data">
+        <table class="receiptLists">
+                <colgroup>
+                    <col width="" />
+                    <col width="" />
+                    <col width="" />
+                    <col width="" />
+
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>设备名</th>
+                        <th>类型</th>
+                        <th>操作</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+            			<tr>
+                            <td style="word-break: break-all; word-wrap:break-word;"><input id="openid_input" name="openid_input" type="text" value="{{ openId }}"></td>
+                            <td style="word-break: break-all; word-wrap:break-word;"><input id="deviceid_input" name="deviceid_input" type="text" value="{{ deviceId }}"></td>
+                            <td style="word-break: break-all; word-wrap:break-word;">
+
+                                <select id="type_input" name = "type_input">
+                                    <option value ="">全部</option>
+                                    <option value ="0" {% if typeId == '0' %} selected {% endif %}>绑定</option>
+                                    <option value ="1" {% if typeId == '1' %} selected {% endif %} >查询</option>
+                                    <option value="2"  {% if typeId == '2' %} selected {% endif %}>浇水</option>
+                                    <option value="3"  {% if typeId == '3' %} selected {% endif %}>自定义模版</option>
+                                    <option value="4"  {% if typeId == '4' %} selected {% endif %}>解除绑定</option>
+                                </select>
+
+                            </td>
+                            <td>
+                                <input id="page_input" name="page" type="page" style="display:none;" value ="{{ rdModels.number }}" >
+
+                                <input type="submit" id="submit"  value="搜索"/>
+                            </td>
+
+            			</tr>
+
+            		</tbody>
+            </table>
+            </form>
+    </div>
+    <div >
+        <div class="contentWrapper">
+              <div align="left" style="padding-top:20px;float:left;padding-left:5%;">
+                  <h2>设备列表</h2>
+            </div>
+        </div>
+    </div>
+    <div align="right" style="padding-top:5px;float:right;padding-right:5%;">
+        <a href="../list_game?page={{ rdModels.number }}&openid_input={{ openId }}&deviceid_input={{ deviceId }}&type_input={{ typeId }}" > 刷新 </a>
+    </div>
+    <div id="mainContainer">
+        <div class="bannerContainer lists">
+            <div class="contentWrapper">
+
+            </div>
+        </div>
+
+        <div class="contentWrapper">
+            <h3 class="mobile_show title">总记录 {{ totalRows }} 个</h3>
+            <table id="tb" class="receiptLists">
+                <colgroup>
+                    <col width="" />
+                    <col width="" />
+                    <col width="" />
+                    <col width="" />
+                    <col width="" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>设备名</th>
+                        <th>类型</th>
+                        <th>时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+            			{% for item in rdModels %}
+            			<tr >
+                            <td style="word-break: break-all; word-wrap:break-word;">{{ item.openId }}</td>
+                            <td style="word-break: break-all; word-wrap:break-word;" id="a">{{ item.deviceId }}</td>
+                            <td style="word-break: break-all; word-wrap:break-word;">{{ item.typeName }}</td>
+                            <td style="word-break: break-all; word-wrap:break-word;">{{ item.createdDateTime }}</td>
+                            <td id="a">
+                                <a href="../list_game?deviceId={{item.deviceId }}&type=4" > 删除</a>
+                            </td>
+
+            			</tr>
+
+            			{% endfor %}
+            		</tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="10">
+                        <div class="tfooter">
+                            <span class="mobile_hidden">总记录 {{ totalRows }} 个</span>
+                            <span class="flex mobile_hidden"></span>
+                            <ul class="pagination">
+                                {% if rdModels.has_previous %}
+                                <li><a href="../list_game?page=1&openid_input={{ openId }}&deviceid_input={{ deviceId }}&type_input={{ typeId }}">First</a></li>
+                                <li><a href="../list_game?page={{ rdModels.previous_page_number }}&openid_input={{ openId }}&deviceid_input={{ deviceId }}&type_input={{ typeId }}">&lt;&lt;</a></li>
+                                {% endif %}
+
+                                <li><a> {{ rdModels.number }}/{{ rdModels.paginator.num_pages }}</a></li>
+                                {% if rdModels.has_next %}
+                                    <li><a href="../list_game?page={{ rdModels.next_page_number }}&openid_input={{ openId }}&deviceid_input={{ deviceId }}&type_input={{ typeId }}">&gt;&gt;</a></li>
+                                    <li><a href="../list_game?page={{ rdModels.paginator.num_pages }}&openid_input={{ openId }}&deviceid_input={{ deviceId }}&type_input={{ typeId }}">Last</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

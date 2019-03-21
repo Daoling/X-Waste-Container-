@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>溜达族</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel="icon" type="image/ico" href="images/favicon.ico">
+    <link href="{% static "css/reset.css" %}" rel="stylesheet">
+    <link href="{% static "css/main.css" %}" rel="stylesheet">
+    <link href="{% static "css/media.css" %}" rel="stylesheet">
+    <!--script src="js/jquery-3.2.1.min.js" ></script-->
+
+</head>
+  <body>
+    <div id="header">
+        <div class="contentWrapper">
+            <a class="logo">
+                <!--<img src="{% static "images/logo.png" %}"/> -->
+                <!--img src="{% static "images/123.png" %}" -->
+            </a>
+            <ul class="menu">
+                <li class="active"><a href="../upload">Upload Video</a></li>
+                <li><a href="../list">Task List</a></li>
+            </ul>
+        </div>
+
+    </div>
+    <div id="mainContainer">
+         <div class="bannerContainer lists">
+            <div class="contentWrapper">
+
+            </div>
+        </div>
+
+        <div class="contentWrapper">
+            <h2>error info:</h2><br /><br />
+            <div style="height: 200px">{{ exceptionInfo }}</div>
+        </div>
+
+    </div>
+    <div id="footer">
+        <div class="contentWrapper">
+            <p>© 2018, Accenture AI lab All Rights Reserved</p>
+        </div>
+    </div>   
+  </body>
+</html>

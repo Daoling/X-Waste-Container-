@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>溜达族</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link href="{% static "css/reset.css" %}" rel="stylesheet">
+    <link href="{% static "css/main.css" %}" rel="stylesheet">
+    <link href="{% static "css/media.css" %}" rel="stylesheet">
+    <script src="{% static "js/vue.js" %}" ></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="header">
+            <div class="contentWrapper">
+                 <h3>登陆</h3>
+            </div>
+
+        </div>
+
+            <div class="contentWrapper">
+                <div class="uploadReceiptBox">
+
+                    <form  id="usrform" method="post" action="../login/" enctype="multipart/form-data">
+                <table class="receiptLists">
+
+                <tbody>
+            			<tr>
+                            <td style="word-break: break-all; word-wrap:break-word;">用户名</td>
+                            <td style="word-break: break-all; word-wrap:break-word;"><input id="userName" name="userName" type="text" ></td>
+
+
+            			</tr>
+                        <tr>
+                            <td style="word-break: break-all; word-wrap:break-word;">密码</td>
+                            <td style="word-break: break-all; word-wrap:break-word;"><input id="password" name="password" type="text" ></td>
+
+
+            			</tr>
+                        <tr>
+                            <td style="word-break: break-all; word-wrap:break-word;"></td>
+            			    <td>
+                                <input type="submit" id="submit"  value="提交"/>
+                            </td>
+
+            			</tr>
+
+            		</tbody>
+            </table>
+            </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- popup area -->
+        <div class="popupContainer" v-show="isShowPopup" style="display: none">
+            <div class="maskerLayer"></div>
+            <div class="errorPopContainer">
+                <div class="wrapper">
+                    <a class="close" v-on:click="hidePopup()"></a>
+                    <div class="topWrapper">
+                        <span class="popErrorIcon"></span>
+                    </div>
+                    <h5>Oops!</h5>
+                    <p>[[ popupInfo ]]</p>
+                    <a class="confirmBtn" v-on:click="hidePopup()">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+
+        vm = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data:{
+                isShowPopup : false,
+                isShowLoading: false,
+                popupInfo:'',
+                imageIsReceipt: {{ imageIsValid }}
+            },
+            mounted:function(){
+                this.init()
+            },
+            methods: {
+                init: function(){
+                    if(this.imageIsReceipt == 2){
+                        this.isShowPopup = true;
+                        this.popupInfo = '用户名或者密码不正常！';
+                        alert("用户名或者密码不正常！");
+                    }
+                    if(this.imageIsReceipt == 0){
+                        this.isShowPopup = true;
+                        this.popupInfo = '用户名或者密码为空！';
+                        alert("用户名或者密码为空！");
+                    }
+                },
+                hidePopup: function(){
+                    this.isShowPopup = false;
+                    this.popupInfo = '';
+                }
+            }
+        });
+    </script>
+    </body>
+</html>
