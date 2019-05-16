@@ -7,7 +7,7 @@ String comdata = "";
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
     pinMode (PULPin, OUTPUT);
     pinMode (DIRPin, OUTPUT);
     pinMode (TrigPin, OUTPUT);
@@ -25,12 +25,18 @@ void loop()
     {
         if(!comdata.compareTo("get high")){
             Serial.print(TestHigh(), DEC);
+            Serial.print("yes");
             }
-        else if (!comdata.compareTo("open door")){
-          StepperMotor(false, true, 3200);
+        else if (!comdata.compareTo("{\"Action\": \"OpenDoor\", \"Number\": \"01\"}")){
+          for(int i = 0; i < 32 * 8; i++){
+            StepperMotor(false, true, 200);
+            }
+          //Serial.print("{\"Action\": \"OpenDoor\", \"Number\": \"01\", \"info\": 1}");
           }
-        else if (!comdata.compareTo("close door")){
-          StepperMotor(false, false, 3200);
+        else if (!comdata.compareTo("{\"Action\": \"CloseDoor\", \"Number\": \"01\"}")){
+          for(int i = 0; i < 32 * 8; i++){
+            StepperMotor(false, false, 200);
+            }
           }
         else;
         comdata = "";
@@ -49,9 +55,9 @@ void StepperMotor(boolean ENA, boolean DIR, int steps)
   for (int i = 0; i < steps; i++) //Forward XXXX steps
   {
     digitalWrite(PULPin, HIGH);
-    delayMicroseconds(50);
+    delayMicroseconds(15);
     digitalWrite(PULPin, LOW);
-    delayMicroseconds(50);
+    delayMicroseconds(15);
   }
 }
 

@@ -1,9 +1,8 @@
-
 String comdata = "";
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(9600);
 }
 
 void loop()
@@ -15,8 +14,8 @@ void loop()
     }
     if (comdata.length() > 0)
     {
-        if(!comdata.compareTo("get high")){
-            Serial.print("data");
+        if(!comdata.compareTo("‘{“Action”:”OpenDoor”,”Number”:”01”}’")){
+            Serial.print("da\"ta");
             }
         else{Serial.print("unknow");}
         comdata = "";
