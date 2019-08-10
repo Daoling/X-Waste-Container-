@@ -20,6 +20,7 @@ UI端与硬件通信方式定义
                                 {"Action": "Photograph", "Number": "01", "info": "aaaaaaaa"}
            1号仓称重35.7公斤      {"Action": "Weigh", "Number": "01", "info": 35.7}
            测量1号仓空间，高度20   {"Action": "Height", "Number": "01", "info": 20}
+           测量瓶子个数   {"Action": "BottleCount", "count": "2"}
 3.  UI与串口通信默认使用"/dev/ttyUSB0" 0号串口，若该串口被占用，编号加1.以此类推，直到找到可用串口，进行通信。
 4.  种类与编号定义：
         01  纸类
