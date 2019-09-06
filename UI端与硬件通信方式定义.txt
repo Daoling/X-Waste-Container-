@@ -5,8 +5,9 @@ UI端与硬件通信方式定义
    UI端下发求情格式： {"Action","动作","Number":"编号"}
        具体内容以1号仓为例如下：
            打开1号仓门    {"Action": "OpenDoor", "Number": "01"}
-           打开所有仓门    {"Action": "OpenAllDoors", "Number": "0"}
            关闭1号仓门    {"Action": "CloseDoor", "Number": "01"}
+           打开所有仓门    {"Action": "OpenCloseAllDoors", "Number": "1"}
+           关闭所有仓门    {"Action": "OpenCloseAllDoors", "Number": "0"}
            1号摄像头拍照  {"Action": "Photograph", "Number": "01"}
  
            
